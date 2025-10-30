@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+// Use Render backend URL in production
+const API_URL =
+  process.env.REACT_APP_API_URL || 'https://storagesystem-1.onrender.com/api';
 
 export const addAttendance = async (attendanceData) => {
     try {
