@@ -1,10 +1,23 @@
 // models/database.js
-const pgp = require('pg-promise')();
+const { Pool } = require('pg');
 require('dotenv').config();
 
-const db = pgp({
+// Use DATABASE_URL from Render/Neon
+const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false } // Neon requires SSL
+    ssl: {
+        rejectUnauthorized: false, // required for Neon
+    },
 });
 
-module.exports = db;
+module.exports = {
+    query: async (text, params) => {
+        const client = await pool.connect();
+        try {
+            const res = await client.query(text, params);
+            return res.rows;
+        } finally {
+            client.release();
+        }
+    },
+};
